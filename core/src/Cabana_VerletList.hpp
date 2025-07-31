@@ -190,7 +190,7 @@ struct VerletListBuilder
         , pid_end( end )
         , alloc_n( max_neigh )
     {
-        assert( positions.size() == neighborhood_radius.size() );
+        assert( positions.extent( 0 ) == neighborhood_radius.size() );
         init( positions, background_radius, cell_size_ratio, grid_min,
               grid_max );
 
