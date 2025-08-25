@@ -190,7 +190,7 @@ struct VerletListBuilder
         , pid_end( end )
         , alloc_n( max_neigh )
     {
-        assert( positions.extent( 0 ) == neighborhood_radius.size() );
+        assert( size( positions ) == size( neighborhood_radius ) );
         init( positions, background_radius, cell_size_ratio, grid_min,
               grid_max );
 
@@ -384,7 +384,8 @@ struct VerletListBuilder
     {
         Kokkos::parallel_reduce(
             Kokkos::ThreadVectorRange( team, num_n ),
-            [&]( const int n, int& local_count ) {
+            [&]( const int n, int& local_count )
+            {
                 neighbor_kernel( pid, x_p, y_p, z_p, n_offset, n, local_count );
             },
             cell_count );
@@ -963,7 +964,7 @@ class VerletList
         static_assert( is_accessible_from<memory_space, ExecutionSpace>{}, "" );
 
         assert( end >= begin );
-        assert( end <= x.size() );
+        assert( end <= size( x ) );
 
         // Create a builder functor.
         using device_type = Kokkos::Device<ExecutionSpace, memory_space>;
