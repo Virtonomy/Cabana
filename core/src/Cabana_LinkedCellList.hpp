@@ -424,10 +424,10 @@ class LinkedCellList
         }
 
         // Get local copies of class data for lambda function capture.
-        auto grid = _grid;
-        auto counts = _counts;
-        auto offsets = _offsets;
-        auto permutes = _permutes;
+        auto& grid = _grid;
+        auto& counts = _counts;
+        auto& offsets = _offsets;
+        auto& permutes = _permutes;
 
         // Count.
         Kokkos::RangePolicy<ExecutionSpace> particle_range( begin, end );
