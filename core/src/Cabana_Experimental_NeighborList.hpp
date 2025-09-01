@@ -64,7 +64,7 @@ struct SubPositionsAndRadius
 template <typename Positions,
           typename = std::enable_if_t<
               Cabana::is_slice<std::remove_reference_t<Positions>>::value ||
-              Kokkos::is_view_v<Positions>>>
+              Kokkos::is_view_v<stdcxx20::remove_cvref_t<Positions>>>>
 auto makePredicates(
     Positions&& positions,
     typename stdcxx20::remove_cvref_t<Positions>::size_type first,
@@ -110,8 +110,7 @@ struct AccessTraits<Positions,
 #if ARBORX_VERSION < 10799
                     PrimitivesTag,
 #endif
-                    std::enable_if_t<Cabana::is_slice<Positions>{} ||
-                                     Kokkos::is_view<Positions>{}>>
+                    std::enable_if_t<Cabana::is_slice<Positions>{}>>
 {
     //! Kokkos memory space.
     using memory_space = typename Positions::memory_space;
