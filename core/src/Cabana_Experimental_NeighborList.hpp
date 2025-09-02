@@ -359,6 +359,7 @@ struct NeighborDiscriminatorCallback2D_SecondPass
 template <typename MemorySpace, typename Tag>
 struct CrsGraph
 {
+    using memory_space = MemorySpace;
     //! Neighbor indices
     Kokkos::View<int*, MemorySpace> col_ind;
     //! Neighbor offsets.
@@ -458,6 +459,7 @@ auto makeNeighborList( Tag tag, Positions const& positions,
 template <typename MemorySpace, typename Tag>
 struct Dense
 {
+    using memory_space = MemorySpace;
     //! Neighbor counts.
     Kokkos::View<int*, MemorySpace> cnt;
     //! Neighbor indices.
