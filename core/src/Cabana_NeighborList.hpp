@@ -152,9 +152,13 @@ KOKKOS_INLINE_FUNCTION std::size_t
 totalNeighbor( const ListType& list, const std::size_t num_particles )
 {
     std::size_t total_n = 0;
-    // Sum neighbors across all particles.
-    for ( std::size_t p = 0; p < num_particles; p++ )
-        total_n += NeighborList<ListType>::numNeighbor( list, p );
+    Kokkos::parallel_reduce(
+        Kokkos::RangePolicy<typename ListType::memory_space::execution_space>(
+            0, num_particles ),
+        KOKKOS_LAMBDA( const std::size_t p, std::size_t& local_sum ) {
+            local_sum += NeighborList<ListType>::numNeighbor( list, p );
+        },
+        total_n );
     return total_n;
 }
 
@@ -164,9 +168,15 @@ KOKKOS_INLINE_FUNCTION std::size_t
 maxNeighbor( const ListType& list, const std::size_t num_particles )
 {
     std::size_t max_n = 0;
-    for ( std::size_t p = 0; p < num_particles; p++ )
-        if ( NeighborList<ListType>::numNeighbor( list, p ) > max_n )
-            max_n = NeighborList<ListType>::numNeighbor( list, p );
+    Kokkos::parallel_reduce(
+        Kokkos::RangePolicy<typename ListType::memory_space::execution_space>(
+            0, num_particles ),
+        KOKKOS_LAMBDA( const std::size_t p, std::size_t& local_max ) {
+            std::size_t n = NeighborList<ListType>::numNeighbor( list, p );
+            if ( n > local_max )
+                local_max = n;
+        },
+        Kokkos::Max<std::size_t>( max_n ) );
     return max_n;
 }
 } // namespace Impl
